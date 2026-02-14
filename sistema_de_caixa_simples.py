@@ -8,7 +8,32 @@ def menu():
 4 - Ver histórico
 5 - Ver resumo
 6 - Sair
+7 - Limpar histórico
 \n''')
+
+def salvar_dados():
+    with open("extrato.txt", "w", encoding="utf-8") as arq:
+        for linha in extrato:
+            arq.write(linha + "\n")
+
+def carregar_dados():
+    global saldo, extrato
+    try:
+        with open("extrato.txt", "r", encoding="utf-8") as arq:
+            extrato = [linha.strip() for linha in arq if linha.strip()]
+
+        saldo = 0.0
+        for linha in extrato:
+            valor_str = linha.split()[-1]              
+            valor = float(valor_str.replace("+", ""))  
+            if linha.startswith("Entrada"):
+                saldo += valor
+            elif linha.startswith("Saída"):
+                saldo += valor 
+    except FileNotFoundError:
+        extrato = []
+        saldo = 0.0
+
 
 def adicionar_dinheiro():
     global saldo
@@ -21,6 +46,7 @@ def adicionar_dinheiro():
             continue
         saldo += valor
         extrato.append(f"Entrada: +{valor:.2f}")
+        salvar_dados()
 
 def registrar_saida():
     global saldo
@@ -36,6 +62,7 @@ def registrar_saida():
             continue
         saldo -= valor
         extrato.append(f"Saída: -{valor:.2f}")
+        salvar_dados()
 
 def movimentacao():
     if not extrato:
@@ -54,13 +81,13 @@ def resumo():
     total_saidas = 0.0
 
     for linha in extrato:
-        valor_str = linha.split()[-1]  # pega "+50.00" ou "-20.00"
-        valor = float(valor_str.replace("+", ""))  # float lida com "-" sozinho
+        valor_str = linha.split()[-1]
+        valor = float(valor_str.replace("+", "")) 
 
         if linha.startswith("Entrada"):
             total_entradas += valor
         elif linha.startswith("Saída"):
-            total_saidas += abs(valor)  # deixa positivo para total de saídas
+            total_saidas += abs(valor)  
 
     print("=== RESUMO ===")
     print(f"Operações: {len(extrato)}")
@@ -68,6 +95,26 @@ def resumo():
     print(f"Total de saídas:   R${total_saidas:.2f}")
     print(f"Saldo final:       R${saldo:.2f}")
 
+def limpar_historico():
+    global extrato, saldo
+
+    if not extrato:
+        print("Não tem transações para limpar.")
+        return
+    
+    confirmacao = input('Tem certeza que deseja limpar o historico? [S/N]: ').upper()
+
+    if confirmacao == 'S':
+        extrato = []
+        saldo = 0.0
+        salvar_dados()
+    elif confirmacao == 'N':
+        print('Operação cancelada.')
+    else:
+        print('Opção inválida')
+
+
+carregar_dados()
 
 while True:
     menu()
@@ -85,6 +132,8 @@ while True:
     elif entrada == 6:
         print('Finalizando programa... ')
         break
+    elif entrada == 7:
+        limpar_historico()
     else: 
         print('Número invalido.')
         continue

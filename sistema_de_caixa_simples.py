@@ -10,21 +10,27 @@ def menu():
 def adicionar_dinheiro():
     global saldo
     while True:
-        valor = int(input('Digite um valor: (Para voltar ao menu principal digite 0): '))
-        saldo += valor
+        valor = float(input('Digite um valor (0 para voltar): '))
         if valor == 0:
             break
+        if valor < 0:
+            print("Digite um valor positivo.")
+            continue
+        saldo += valor
 
 def registrar_saidia():
     global saldo
     while True:
-        valor = int(input('Digite o valor que vai ser retirado do caixa: (Para voltar ao menu principal digite 0): '))
-        if saldo < valor:
-            print('Saldo insuficiente!')
-        saldo -= valor
+        valor = float(input('Digite o valor da saída (0 para voltar): '))
         if valor == 0:
             break
-
+        if valor < 0:
+            print("Digite um valor positivo.")
+            continue
+        if valor > saldo:
+            print('Saldo insuficiente!')
+            continue
+        saldo -= valor
 
 while True:
     menu()

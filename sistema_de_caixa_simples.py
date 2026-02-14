@@ -6,8 +6,8 @@ def menu():
 2 - Saída
 3 - Ver saldo
 4 - Ver histórico
-5 - Sair
-
+5 - Ver resumo
+6 - Sair
 \n''')
 
 def adicionar_dinheiro():
@@ -44,6 +44,9 @@ def movimentacao():
     for operacao in extrato:
         print(operacao)
 
+def resumo():
+    movimentacao()
+    print(f'Seu saldo é de: R${saldo:.2f}')
 
 while True:
     menu()
@@ -57,6 +60,8 @@ while True:
     elif entrada == 4:
         movimentacao()
     elif entrada == 5:
+        resumo()
+    elif entrada == 6:
         print('Finalizando programa... ')
         break
     else: 

@@ -45,8 +45,29 @@ def movimentacao():
         print(operacao)
 
 def resumo():
-    movimentacao()
-    print(f'Seu saldo é de: R${saldo:.2f}')
+    if not extrato:
+        print("Nenhuma movimentação ainda.")
+        print(f"Saldo final: R${saldo:.2f}")
+        return
+
+    total_entradas = 0.0
+    total_saidas = 0.0
+
+    for linha in extrato:
+        valor_str = linha.split()[-1]  # pega "+50.00" ou "-20.00"
+        valor = float(valor_str.replace("+", ""))  # float lida com "-" sozinho
+
+        if linha.startswith("Entrada"):
+            total_entradas += valor
+        elif linha.startswith("Saída"):
+            total_saidas += abs(valor)  # deixa positivo para total de saídas
+
+    print("=== RESUMO ===")
+    print(f"Operações: {len(extrato)}")
+    print(f"Total de entradas: R${total_entradas:.2f}")
+    print(f"Total de saídas:   R${total_saidas:.2f}")
+    print(f"Saldo final:       R${saldo:.2f}")
+
 
 while True:
     menu()
